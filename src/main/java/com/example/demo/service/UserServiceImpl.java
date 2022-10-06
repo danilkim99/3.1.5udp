@@ -50,9 +50,9 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     public User saveUser(User user) {
-       /* if (isNull(user) || user.getUsername().isEmpty() || user.getSurname().isEmpty()) {
+       if (isNull(user) || user.getUsername().isEmpty() || user.getSurname().isEmpty()) {
             return null;
-        } */
+        }
         user.setRoles(user.getRoles());
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         return userRepository.save(user);

@@ -52,18 +52,18 @@ public class UserController {
     }
 
     @GetMapping("/admin/user-create")
-    public String createUserForm(User use) {
+    public String createUserForm(User user) {
         return "user-create";
     }
 
-    @PostMapping("/user-create")
+    @PostMapping("/admin/user-create")
     public String createUserForm(User user, @RequestParam(value = "role") String[] roles) {
         user.setRoles(userService.getRoles(roles));
         userService.saveUser(user);
         return "redirect:/admin";
     }
 
-    @GetMapping("/admin/user-delete/{id}")
+    @GetMapping("/admin/delete-user/{id}")
     public String deleteUser(@PathVariable("id") Long id) {
         userService.deleteById(id);
         return "redirect:/admin";
