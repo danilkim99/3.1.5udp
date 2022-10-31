@@ -2,17 +2,19 @@ package com.example.demo.service;
 
 import com.example.demo.model.Role;
 import com.example.demo.model.User;
+import org.springframework.security.core.userdetails.UserDetails;
 
-import javax.xml.bind.ValidationException;
 import java.util.List;
-import java.util.Set;
+
 
 public interface UserService {
 
-    User findById(Long id);
-    List<User> findAll();
+    User findUserById(Long id);
+    List<User> findAllUsers();
     User saveUser(User user);
-    void deleteById(Long id);
+    void deleteUser(User user);
     User findByUsername(String username);
-    Set<Role> getRoles(String[] roles);
+    List<Role> listRoles();
+    void updateUser(User user);
+    UserDetails loadUserByUsername(String username);
 }
