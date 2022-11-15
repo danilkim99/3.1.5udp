@@ -13,7 +13,7 @@ import java.security.Principal;
 
 
 @RestController
-@RequestMapping(value = "/api/restuser")
+@RequestMapping(value = "/api/user")
 public class UserController {
 
     private final UserService userService;
@@ -23,7 +23,7 @@ public class UserController {
         this.userService = userService;
     }
 
-    @GetMapping("/userpage")
+    @GetMapping("/user_page")
     public User oneUser(Principal principal) {
         return userService.findByUsername(principal.getName());
     }

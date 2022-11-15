@@ -1,4 +1,4 @@
-const urlUser = 'http://localhost:8080/api/restuser/userpage/'
+const urlUser = 'http://localhost:8080/api/user/user_page/'
 let loggedInUser = document.querySelector('#UserInfo');
 let loggedUser = document.querySelector('#navBarUser')
 
