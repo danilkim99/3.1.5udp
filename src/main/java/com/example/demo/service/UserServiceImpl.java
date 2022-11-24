@@ -5,9 +5,8 @@ import com.example.demo.model.Role;
 import com.example.demo.model.User;
 import com.example.demo.repository.RoleRepository;
 import com.example.demo.repository.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -16,11 +15,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 
-import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
+
 
 import static java.util.Objects.isNull;
 
@@ -32,7 +28,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     private final RoleRepository roleRepository;
     private PasswordEncoder passwordEncoder;
 
-
+    @Autowired
     public UserServiceImpl(UserRepository userRepository, RoleRepository roleRepository,
                            @Lazy PasswordEncoder passwordEncoder) {
 
@@ -41,14 +37,17 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    public User findById(Long id) {
+    @Override
+    public User findUserById(Long id) {
         return userRepository.findById(id).orElse(null);
     }
 
-    public List<User> findAll() {
+    @Override
+    public List<User> findAllUsers() {
         return userRepository.findAll();
     }
 
+    @Override
     public User saveUser(User user) {
        if (isNull(user) || user.getUsername().isEmpty() || user.getSurname().isEmpty()) {
             return null;
@@ -58,34 +57,35 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         return userRepository.save(user);
     }
 
-    public void deleteById(Long id) {
-        userRepository.deleteById(id);
+
+    @Override
+    public void updateUser(User user) {
+        userRepository.merge(user);
     }
 
-    public User findByUsername(String username){
-        return userRepository.getByUsername(username);
+    @Override
+    public void deleteUser(User user) {
+        userRepository.delete(user);
+    }
+
+    @Override
+    public User findByUsername(String username) {
+        return userRepository.findByUsername(username);
     }
 
     @Override
     @Transactional(readOnly = true)
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userRepository.getByUsername(username);
+        User user = userRepository.findByUsername(username);
         if(user == null){
             throw new UsernameNotFoundException (String.format("User not found ", username));
         }
         return user;
     }
 
-    private Collection<? extends GrantedAuthority> getRoles(Collection<Role> roles) {
-        return roles.stream().map(role -> new SimpleGrantedAuthority(role.getName())).collect(Collectors.toList());
+    @Override
+    public List<Role> listRoles() {
+        return roleRepository.findAll();
     }
 
-    @Override
-    public Set<Role> getRoles(String[] roles){
-        Set<Role> roleSet = new HashSet<>();
-        for (String role : roles) {
-            roleSet.add(roleRepository.findByName(role));
-        }
-        return roleSet;
-    }
 }
